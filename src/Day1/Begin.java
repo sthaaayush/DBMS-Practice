@@ -8,21 +8,39 @@ public class Begin {
 		String username = "root";
 		String password = "";
 
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection(databsae, username, password);
+			connection = DriverManager.getConnection(databsae, username, password);
 			System.out.println("Connection Established Successfully");
-			
-			Statement stm= con.createStatement();
-			
-			String query="SELECT * FROM students";
-			ResultSet rs=stm.executeQuery(query);
-			
-			while(rs.next()) {
-				System.out.println(rs.getInt("id"));
+
+			statement = connection.createStatement();
+
+			String query = "SELECT * FROM students";
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+				System.out.println(resultSet.getInt("id"));
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+                System.out.println("Connection closed.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
 	}
 }
